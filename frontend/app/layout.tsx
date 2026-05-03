@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { fetchSurahs } from "@/lib/api";
 import AppShell from "@/components/AppShell";
+import ProgressBar from "@/components/ProgressBar";
+import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -42,7 +44,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
-        <AppShell surahs={surahs}>{children}</AppShell>
+        <AppShell surahs={surahs}>
+            <Suspense fallback={null}>
+              <ProgressBar />
+            </Suspense>
+            {children}
+          </AppShell>
       </body>
     </html>
   );
