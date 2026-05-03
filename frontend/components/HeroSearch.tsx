@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Surah } from "@/lib/types";
 import { HADITHS } from "@/lib/hadiths";
 import { QUICK_SURAHS } from "@/lib/quickSurahs";
+import quranImg from "@/assets/quran.png";
 
 interface Props {
   surahs: Surah[];
@@ -51,13 +53,16 @@ export default function HeroSearch({ surahs }: Props) {
   const h = HADITHS[hadithIdx];
 
   return (
-    <section className="mb-10 py-14 sm:py-20">
+    <section className="mb-10 py-10 sm:py-20">
       <div className="flex flex-col items-center text-center max-w-2xl mx-auto gap-8">
         <div className="w-full">
           <p className="text-sm mb-3" style={{ fontFamily: "Amiri", direction: "rtl", color: "#428038" }}>
             بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-2 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-2 tracking-tight flex items-center justify-center gap-3">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center overflow-hidden shrink-0" style={{ backgroundColor: "#428038" }}>
+              <Image src={quranImg} alt="Quran" width={40} height={40} className="object-contain" />
+            </div>
             Quran <span style={{ color: "#428038" }}>Mazid</span>
           </h1>
           <p className="text-muted text-sm sm:text-base">
@@ -68,7 +73,7 @@ export default function HeroSearch({ surahs }: Props) {
         <div className="relative w-full">
           <div className="flex items-center gap-3 bg-card border rounded-2xl px-4 py-3 transition-all duration-200"
             style={focused ? { borderColor: "#428038", boxShadow: "0 0 0 3px rgba(66,128,56,0.1)" } : { borderColor: "var(--card-border)" }}>
-            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-muted shrink-0">
+            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white shrink-0">
               <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
             </svg>
             <input ref={inputRef} type="text" value={query}
@@ -113,7 +118,7 @@ export default function HeroSearch({ surahs }: Props) {
           ))}
         </div>
 
-        <div className={`cursor-pointer w-full transition-all duration-300 ${animating ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
+        <div className={`hidden sm:block cursor-pointer w-full transition-all duration-300 ${animating ? "opacity-0 translate-y-2" : "opacity-100 translate-y-0"}`}
           onClick={() => router.push(`/surah/${h.surahId}#ayah-${h.ayah}`)}
           title="Click to read the related verse">
           <div className="w-1 h-5 rounded-full mx-auto mb-3" style={{ background: "#428038" }} />

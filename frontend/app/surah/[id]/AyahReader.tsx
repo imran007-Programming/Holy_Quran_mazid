@@ -79,7 +79,7 @@ export default function AyahReader({ surah }: AyahReaderProps) {
           style={{ backgroundColor: `${SEC}08` }}
         >
           {/* Left — Makkah or Madinah image */}
-          <div className="w-40 h-40 shrink-0 rounded-xl overflow-hidden">
+          <div className="hidden sm:block w-40 h-40 shrink-0 rounded-xl overflow-hidden">
             <Image
               src={surah.type === "meccan" ? "/makkah.webp" : "/madinah.webp"}
               alt={surah.type === "meccan" ? "Makkah" : "Madinah"}
@@ -102,7 +102,7 @@ export default function AyahReader({ surah }: AyahReaderProps) {
             </div>
           </div>
           {/* Right — Bismillah image */}
-          <div className="shrink-0">
+          <div className="hidden sm:block shrink-0">
             <Image
               src={bismillahImg}
               alt="Bismillah"

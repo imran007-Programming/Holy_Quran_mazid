@@ -149,16 +149,9 @@ export default function AppShell({ surahs, children }: Props) {
                     <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden" style={{ backgroundColor: SEC }}>
                       <Image src={quranImg} alt="Quran" width={28} height={28} className="object-contain" />
                     </div>
-                    <span className="text-foreground font-bold text-base">Quran Mazid</span>
+                    <span className="hidden sm:inline text-foreground font-bold text-base">Quran Mazid</span>
                   </Link>
-                  <Link href="/bookmarks"
-                    className="w-9 h-9 rounded-lg flex items-center justify-center border border-card-border text-muted hover:text-foreground hover:bg-sidebar-hover transition-colors"
-                    title="Bookmarks">
-                    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                      <path d="M6.5 2H20v20l-7-4-7 4V2z" />
-                    </svg>
-                  </Link>
+
                 </div>
 
                 <div className="flex items-center gap-2">
@@ -232,37 +225,103 @@ function HomeNavbar({ theme, onThemeChange, onSearch }: {
   onSearch: () => void;
 }) {
   const pathname = usePathname();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/90 backdrop-blur border-b border-card-border">
-      <div className="max-w-screen-2xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden shadow-sm transition-opacity group-hover:opacity-80" style={{ backgroundColor: SEC }}>
-            <Image src={quranImg} alt="Quran" width={28} height={28} className="object-contain" />
+    <>
+      <nav className="sticky top-0 z-50 bg-background/90 backdrop-blur border-b border-card-border">
+        <div className="max-w-screen-2xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+
+          <div className="flex items-center gap-2">
+            {/* Hamburger — mobile only */}
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:bg-sidebar-hover hover:text-foreground transition-colors"
+              aria-label="Open menu"
+            >
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
+              </svg>
+            </button>
+
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden shadow-sm transition-opacity group-hover:opacity-80" style={{ backgroundColor: SEC }}>
+                <Image src={quranImg} alt="Quran" width={28} height={28} className="object-contain" />
+              </div>
+              <span className="text-foreground font-bold text-lg">Quran Mazid</span>
+            </Link>
           </div>
-          <span className="text-foreground font-bold text-lg">Quran Mazid</span>
-        </Link>
 
-        <div className="flex items-center gap-1">
-          <NavLink href="/" label="Home" active={pathname === "/"} />
-          <NavLink href="/surah/1" label="Read Quran" active={pathname.startsWith("/surah")} />
-          <NavLink href="/bookmarks" label="Bookmarks" active={pathname === "/bookmarks"} />
-        </div>
+          {/* Desktop nav links */}
+          <div className="hidden md:flex items-center gap-1">
+            <NavLink href="/" label="Home" active={pathname === "/"} />
+            <NavLink href="/surah/1" label="Read Quran" active={pathname.startsWith("/surah")} />
+            <NavLink href="/bookmarks" label="Bookmarks" active={pathname === "/bookmarks"} />
+          </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onSearch}
-            className="w-9 h-9 rounded-lg flex items-center justify-center border border-card-border text-muted hover:text-foreground hover:bg-sidebar-hover transition-colors"
-            title="Search surah (Ctrl+K)"
-          >
-            <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
-              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-            </svg>
-          </button>
-          <ThemeDropdown theme={theme as "dark" | "light" | "sepia" | "system"} onChange={onThemeChange} />
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onSearch}
+              className="w-9 h-9 rounded-lg flex items-center justify-center border border-card-border text-muted hover:text-foreground hover:bg-sidebar-hover transition-colors"
+              title="Search surah (Ctrl+K)"
+            >
+              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current">
+                <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+              </svg>
+            </button>
+            <ThemeDropdown theme={theme as "dark" | "light" | "sepia" | "system"} onChange={onThemeChange} />
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile Drawer */}
+      {drawerOpen && (
+        <div className="fixed inset-0 z-[80] md:hidden">
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60" onClick={() => setDrawerOpen(false)} />
+
+          {/* Drawer panel — slides from left */}
+          <div className="absolute top-0 left-0 h-full w-64 bg-sidebar border-r border-sidebar-border flex flex-col shadow-2xl"
+            style={{ animation: "slideInLeft 0.25s ease" }}>
+
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-4 py-4 border-b border-sidebar-border">
+              <Link href="/" className="flex items-center gap-2" onClick={() => setDrawerOpen(false)}>
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden" style={{ backgroundColor: SEC }}>
+                  <Image src={quranImg} alt="Quran" width={24} height={24} className="object-contain" />
+                </div>
+                <span className="text-foreground font-bold text-base">Quran Mazid</span>
+              </Link>
+              <button onClick={() => setDrawerOpen(false)} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-sidebar-hover transition-colors">
+                <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current">
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Nav links */}
+            <div className="flex flex-col gap-1 p-3">
+              <DrawerLink href="/" label="Home" active={pathname === "/"} icon={
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" /></svg>
+              } onClick={() => setDrawerOpen(false)} />
+              <DrawerLink href="/surah/1" label="Read Quran" active={pathname.startsWith("/surah")} icon={
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4zm0 16V14l2.5-1.5L11 14v6H6zm12 0h-5v-6l2.5-1.5L18 14v6zm0-8h-5V4h5v8z" /></svg>
+              } onClick={() => setDrawerOpen(false)} />
+              <DrawerLink href="/bookmarks" label="Bookmarks" active={pathname === "/bookmarks"} icon={
+                <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z" /></svg>
+              } onClick={() => setDrawerOpen(false)} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideInLeft {
+          from { transform: translateX(-100%); }
+          to   { transform: translateX(0); }
+        }
+      `}</style>
+    </>
   );
 }
 
@@ -273,6 +332,20 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
       className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors text-muted hover:text-foreground hover:bg-sidebar-hover"
       style={active ? { backgroundColor: "rgba(66,128,56,0.15)", color: SEC } : {}}
     >
+      {label}
+    </Link>
+  );
+}
+
+function DrawerLink({ href, label, active, icon, onClick }: { href: string; label: string; active: boolean; icon: React.ReactNode; onClick: () => void }) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
+      style={active ? { backgroundColor: "rgba(66,128,56,0.15)", color: SEC } : { color: "var(--muted)" }}
+    >
+      {icon}
       {label}
     </Link>
   );

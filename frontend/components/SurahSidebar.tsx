@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Surah } from "@/lib/types";
 import { SurahSidebarProps } from "@/lib/interfaces";
 import { JUZ_DATA_SIDEBAR } from "@/lib/juzData";
@@ -9,6 +9,7 @@ import { getPageSurah } from "@/lib/pageMap";
 
 const SEC = "#428038";
 const PAGES = Array.from({ length: 604 }, (_, i) => i + 1);
+const TABS: Tab[] = ["surah", "juz", "page"];
 
 type Tab = "surah" | "juz" | "page";
 
@@ -32,7 +33,20 @@ function DiamondBadge({ number, active }: { number: number; active?: boolean }) 
 export default function SurahSidebar({ surahs, isOpen, onClose }: SurahSidebarProps) {
   const pathname = usePathname();
   const [tab, setTab] = useState<Tab>("surah");
+  const [animClass, setAnimClass] = useState("");
   const [search, setSearch] = useState("");
+  const prevTabIndex = useRef(0);
+  const tabIndex = TABS.indexOf(tab);
+
+  function changeTab(t: Tab) {
+    if (t === tab) return;
+    const nextIndex = TABS.indexOf(t);
+    const dir = nextIndex > prevTabIndex.current ? "left" : "right";
+    setAnimClass(dir === "left" ? "sidebar-tab-slide-left" : "sidebar-tab-slide-right");
+    prevTabIndex.current = nextIndex;
+    setTab(t);
+    setTimeout(() => setAnimClass(""), 350);
+  }
 
   const filteredSurahs = surahs.filter(
     (s) =>
@@ -62,11 +76,20 @@ export default function SurahSidebar({ surahs, isOpen, onClose }: SurahSidebarPr
         <p className="text-muted text-xs">114 Surahs · 6,236 Ayahs</p>
 
         {/* Pill tabs */}
-        <div className="flex gap-1 mt-3 bg-sidebar-hover rounded-lg p-1">
-          {(["surah", "juz", "page"] as Tab[]).map((t) => (
-            <button key={t} onClick={() => setTab(t)}
-              className="flex-1 py-1 rounded-md text-xs font-medium capitalize transition-colors text-muted hover:text-foreground"
-              style={tab === t ? { backgroundColor: SEC, color: "#fff" } : {}}>
+        <div className="relative flex mt-3 bg-gray-500/30 rounded-2xl p-1.5">
+          {/* Sliding indicator */}
+          <div
+            className="absolute top-1.5 bottom-1.5 rounded-xl transition-transform duration-300 ease-in-out"
+            style={{
+              width: `calc(${100 / 3}% - 4px)`,
+              backgroundColor: "#000",
+              transform: `translateX(calc(${tabIndex * 100}% + ${tabIndex * 2}px))`,
+            }}
+          />
+          {TABS.map((t) => (
+            <button key={t} onClick={() => changeTab(t)}
+              className="relative z-10 flex-1 py-1.5 rounded-xl text-xs font-medium capitalize transition-colors duration-300"
+              style={{ color: tab === t ? "#fff" : "#888" }}>
               {t}
             </button>
           ))}
@@ -76,14 +99,14 @@ export default function SurahSidebar({ surahs, isOpen, onClose }: SurahSidebarPr
         <div className="relative mt-2">
           <input
             type="text" value={search}
-            onChange={(e) => { setSearch(e.target.value); if (tab !== "surah") setTab("surah"); }}
+            onChange={(e) => { setSearch(e.target.value); if (tab !== "surah") changeTab("surah"); }}
             placeholder="Search surah..."
             className="w-full bg-sidebar-hover border border-sidebar-border rounded-lg pl-3 pr-9 py-2 text-foreground placeholder-muted text-xs focus:outline-none transition-colors"
             style={{ outlineColor: SEC }}
             onFocus={(e) => { e.currentTarget.style.borderColor = SEC; }}
             onBlur={(e) => { e.currentTarget.style.borderColor = ""; }}
           />
-          <svg viewBox="0 0 24 24" className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 fill-muted pointer-events-none">
+          <svg viewBox="0 0 24 24" className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 fill-white pointer-events-none">
             <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
           </svg>
         </div>
@@ -93,8 +116,12 @@ export default function SurahSidebar({ surahs, isOpen, onClose }: SurahSidebarPr
       <style>{`
         .surah-card:hover .diamond-badge-inner { background: ${SEC} !important; }
         .surah-card:hover .diamond-badge-text { color: #fff !important; }
+        @keyframes sidebarSlideLeft  { from { opacity: 0; transform: translateX(30px);  } to { opacity: 1; transform: translateX(0); } }
+        @keyframes sidebarSlideRight { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        .sidebar-tab-slide-left  { animation: sidebarSlideLeft  0.3s ease; }
+        .sidebar-tab-slide-right { animation: sidebarSlideRight 0.3s ease; }
       `}</style>
-      <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1.5">
+      <div className={`flex-1 overflow-y-auto p-2 flex flex-col gap-1.5 ${animClass}`}>
         {tab === "surah" && filteredSurahs.map((surah) => {
           const active = pathname === `/surah/${surah.id}`;
           return (
